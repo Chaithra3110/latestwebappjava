@@ -42,7 +42,6 @@ steps:
   displayName: Maven Package and Publish Artifacts
   pool:
     vmImage: $(vmImageName)
-
   steps:
   - task: SonarQubeAnalyze@5
     inputs:
