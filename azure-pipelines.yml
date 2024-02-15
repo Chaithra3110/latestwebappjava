@@ -38,6 +38,7 @@ steps:
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
 
+
 - job: MavenPackageAndPublishArtifacts
   displayName: Maven Package and Publish Artifacts
   pool:
