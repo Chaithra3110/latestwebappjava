@@ -20,22 +20,24 @@ variables:
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
- - task: SonarQubePrepare@5
-   inputs:
-     SonarQube: 'sonarqube'
-     scannerMode: 'Other'
-     extraProperties: |
-       # Additional properties that will be passed to the scanner,
-       # Put one key=value per line, example:
-       # sonar.exclusions=**/*.bin
-       sonar.projectKey=development-project_development-project_dd1ab922-8d91-4755-9570-31e0c988cab5
-       sonar.projectName=development-project
+steps:
+- task: SonarQubePrepare@5
+  inputs:
+    SonarQube: 'sonarqube'
+    scannerMode: 'Other'
+    extraProperties: |
+      # Additional properties that will be passed to the scanner,
+      # Put one key=value per line, example:
+      # sonar.exclusions=**/*.bin
+      sonar.projectKey=development-project_development-project_dd1ab922-8d91-4755-9570-31e0c988cab5
+      sonar.projectName=development-project
 
 - task: JavaToolInstaller@0
   inputs:
     versionSpec: '17'
     jdkArchitectureOption: 'x64'
     jdkSourceOption: 'PreInstalled'
+
 stages:
 - stage: Build
   displayName: Build stage
@@ -45,21 +47,19 @@ stages:
     pool:
       vmImage: $(vmImageName)
 
-  - task: SonarQubeAnalyze@5
-    inputs:
-      jdkversion: 'JAVA_HOME_17_X64'
-
-  - task: SonarQubePublish@5
-    inputs:
-      pollingTimeoutSec: '300'
-
     steps:
+    - task: SonarQubeAnalyze@5
+      inputs:
+        jdkversion: 'JAVA_HOME_17_X64'
+
+    - task: SonarQubePublish@5
+      inputs:
+        pollingTimeoutSec: '300'
+
     - task: Maven@3
       displayName: 'Maven Package'
       inputs:
         mavenPomFile: 'MyWebApp/pom.xml'
-
-
 
     - task: CopyFiles@2
       displayName: 'Copy Files to artifact staging directory'
@@ -70,4 +70,3 @@ stages:
 
     - upload: $(Build.ArtifactStagingDirectory)
       artifact: drop
-
